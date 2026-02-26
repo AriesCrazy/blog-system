@@ -61,4 +61,4 @@ logging:
     com.blog: debug
     org.springframework.security: debug
   pattern:
-    console: '%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{50} - %msg%n'
+    console: '%d{yyyy年MM月dd日 HH:mm:ss} [%thread] %-5level %logger{50} - %msg%n'
