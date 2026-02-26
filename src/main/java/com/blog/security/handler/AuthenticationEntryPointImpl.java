@@ -1,6 +1,6 @@
 package com.blog.security.handler;
 
-import com.blog.common.constant.ResultCode;
+import com.blog.common.result.ResultCode;
 import com.blog.common.result.Result;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;

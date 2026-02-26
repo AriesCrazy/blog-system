@@ -1,6 +1,6 @@
 package com.blog.common.exception;
 
-import com.blog.common.constant.ResultCode;
+import com.blog.common.result.ResultCode;
 import lombok.Getter;
 
 /**

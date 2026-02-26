@@ -1,6 +1,6 @@
 package com.blog.common.exception;
 
-import com.blog.common.constant.ResultCode;
+import com.blog.common.result.ResultCode;
 import com.blog.common.result.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.AccessDeniedException;

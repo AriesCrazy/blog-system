@@ -1,4 +1,4 @@
-package com.blog.common.constant;
+package com.blog.common.result;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

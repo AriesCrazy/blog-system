@@ -1,7 +1,7 @@
 package com.blog.security;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.blog.common.constant.ResultCode;
+import com.blog.common.result.ResultCode;
 import com.blog.common.exception.BusinessException;
 import com.blog.entity.mysql.Role;
 import com.blog.entity.mysql.User;

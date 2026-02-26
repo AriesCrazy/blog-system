@@ -1,6 +1,5 @@
 package com.blog.common.result;
 
-import com.blog.common.constant.ResultCode;
 import lombok.Data;
 
 import java.io.Serializable;
