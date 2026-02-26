@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.blog.mapper.ArticleMapper">
+
+    <!-- 文章详情结果映射（包含作者、分类、标签） -->
+    <resultMap id="ArticleDetailResultMap" type="com.blog.entity.mysql.Article">
+        <id column="id" property="id"/>
+        <result column="title" property="title"/>
+        <result column="summary" property="summary"/>
+        <result column="content" property="content"/>
+        <result column="cover_image" property="coverImage"/>
+        <result column="category_id" property="categoryId"/>
+        <result column="author_id" property="authorId"/>
+        <result column="view_count" property="viewCount"/>
+        <result column="like_count" property="likeCount"/>
+        <result column="comment_count" property="commentCount"/>
+        <result column="is_top" property="isTop"/>
+        <result column="status" property="status"/>
+        <result column="deleted" property="deleted"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="publish_time" property="publishTime"/>
+    </resultMap>
+
+    <!-- 查询文章详情（包含作者、分类信息） -->
+    <select id="selectArticleDetail" resultMap="ArticleDetailResultMap">
+        SELECT
+            a.*,
+            u.nickname as author_name,
+            u.avatar as author_avatar,
+            c.category_name
+        FROM article a
+                 LEFT JOIN user u ON a.author_id = u.id
+                 LEFT JOIN category c ON a.category_id = c.id
+        WHERE a.id = #{articleId}
+          AND a.deleted = 0
+    </select>
+
+    <!-- 分页查询文章列表 -->
+    <select id="selectArticlePage" resultMap="ArticleDetailResultMap">
+        SELECT
+        a.*,
+        u.nickname as author_name,
+        c.category_name
+        FROM article a
+        LEFT JOIN user u ON a.author_id = u.id
+        LEFT JOIN category c ON a.category_id = c.id
+        WHERE a.deleted = 0
+        <if test="title != null and title != ''">
+            AND a.title LIKE CONCAT('%', #{title}, '%')
+        </if>
+        <if test="categoryId != null">
+            AND a.category_id = #{categoryId}
+        </if>
+        <if test="authorId != null">
+            AND a.author_id = #{authorId}
+        </if>
+        <if test="status != null">
+            AND a.status = #{status}
+        </if>
+        ORDER BY a.is_top DESC, a.publish_time DESC
+    </select>
+
+    <!-- 查询热门文章（根据浏览量排序） -->
+    <select id="selectHotArticles" resultMap="ArticleDetailResultMap">
+        SELECT
+            a.*,
+            u.nickname as author_name
+        FROM article a
+                 LEFT JOIN user u ON a.author_id = u.id
+        WHERE a.status = 1
+          AND a.deleted = 0
+        ORDER BY a.view_count DESC
+            LIMIT #{limit}
+    </select>
+
+    <!-- 根据标签ID查询文章列表 -->
+    <select id="selectArticlesByTagId" resultMap="ArticleDetailResultMap">
+        SELECT
+            a.*,
+            u.nickname as author_name,
+            c.category_name
+        FROM article a
+                 INNER JOIN article_tag at ON a.id = at.article_id
+            LEFT JOIN user u ON a.author_id = u.id
+            LEFT JOIN category c ON a.category_id = c.id
+        WHERE at.tag_id = #{tagId}
+          AND a.status = 1
+          AND a.deleted = 0
+        ORDER BY a.publish_time DESC
+    </select>
+
+</mapper>

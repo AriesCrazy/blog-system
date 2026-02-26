@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.blog.mapper.UserMapper">
+
+    <!-- 结果映射 -->
+    <resultMap id="UserResultMap" type="com.blog.entity.mysql.User">
+        <id column="id" property="id"/>
+        <result column="username" property="username"/>
+        <result column="password" property="password"/>
+        <result column="nickname" property="nickname"/>
+        <result column="email" property="email"/>
+        <result column="avatar" property="avatar"/>
+        <result column="phone" property="phone"/>
+        <result column="status" property="status"/>
+        <result column="deleted" property="deleted"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <!-- 根据用户名查询用户（包含角色信息） -->
+    <select id="selectUserWithRoles" resultType="com.blog.entity.mysql.User">
+        SELECT
+            u.*,
+            GROUP_CONCAT(r.role_key) as roles
+        FROM user u
+                 LEFT JOIN user_role ur ON u.id = ur.user_id
+                 LEFT JOIN role r ON ur.role_id = r.id
+        WHERE u.username = #{username}
+          AND u.deleted = 0
+        GROUP BY u.id
+    </select>
+
+    <!-- 分页查询用户列表 -->
+    <select id="selectUserPage" resultMap="UserResultMap">
+        SELECT * FROM user
+        WHERE deleted = 0
+        <if test="username != null and username != ''">
+            AND username LIKE CONCAT('%', #{username}, '%')
+        </if>
+        <if test="email != null and email != ''">
+            AND email LIKE CONCAT('%', #{email}, '%')
+        </if>
+        <if test="status != null">
+            AND status = #{status}
+        </if>
+        ORDER BY create_time DESC
+    </select>
+
+</mapper>

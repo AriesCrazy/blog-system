@@ -28,4 +28,14 @@ public interface ArticleTagMapper extends BaseMapper<ArticleTag> {
      */
     @Select("SELECT article_id FROM article_tag WHERE tag_id = #{tagId}")
     List<Long> selectArticleIdsByTagId(@Param("tagId") Long tagId);
+
+    /**
+     * 批量插入文章标签关联
+     */
+    int batchInsert(@Param("list") List<ArticleTag> list);
+
+    /**
+     * 删除文章的所有标签关联
+     */
+    int deleteByArticleId(@Param("articleId") Long articleId);
 }
