@@ -13,7 +13,7 @@ server:
 
 # JWT配置
 jwt:
-  secret: your-256-bit-secret-key-change-this-in-production-environment-blog-system-2026
+  secret: QmFzZTY0U2VjdXJlS2V5Rm9ySldUU2lnbmluZzIwMjZFeGFtcGxlIQ==
   expiration: 86400000  # 24小时（毫秒）
   header: Authorization
   prefix: Bearer
