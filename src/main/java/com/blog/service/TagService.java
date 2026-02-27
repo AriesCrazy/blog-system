@@ -26,17 +26,12 @@ public interface TagService {
     void deleteTag(Long tagId);
 
     /**
-     * 根据ID获取标签
+     * 获取标签详情
      */
     Tag getTagById(Long tagId);
 
     /**
      * 获取所有标签列表
      */
-    List<TagVO> getTagList();
-
-    /**
-     * 根据文章ID获取标签列表
-     */
-    List<TagVO> getTagsByArticleId(Long articleId);
+    List<TagVO> getAllTags();
 }

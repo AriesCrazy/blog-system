@@ -21,12 +21,12 @@ public interface CommentService {
     void deleteComment(String commentId, Long userId);
 
     /**
-     * 根据文章ID获取评论列表（树形结构）
+     * 获取文章的评论列表（树形结构）
      */
     List<CommentVO> getCommentsByArticleId(Long articleId);
 
     /**
-     * 根据用户ID获取评论列表
+     * 获取用户的评论列表
      */
     List<CommentVO> getCommentsByUserId(Long userId);
 
@@ -36,7 +36,7 @@ public interface CommentService {
     void likeComment(String commentId, Long userId);
 
     /**
-     * 获取文章评论数
+     * 获取评论详情
      */
-    long getCommentCount(Long articleId);
+    CommentVO getCommentById(String commentId);
 }

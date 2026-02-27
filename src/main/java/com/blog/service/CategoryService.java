@@ -26,12 +26,12 @@ public interface CategoryService {
     void deleteCategory(Long categoryId);
 
     /**
-     * 根据ID获取分类
+     * 获取分类详情
      */
     Category getCategoryById(Long categoryId);
 
     /**
      * 获取所有分类列表
      */
-    List<CategoryVO> getCategoryList();
+    List<CategoryVO> getAllCategories();
 }

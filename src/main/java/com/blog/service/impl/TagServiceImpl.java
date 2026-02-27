@@ -2,6 +2,7 @@ package com.blog.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.blog.common.exception.BusinessException;
+import com.blog.entity.mysql.ArticleTag;
 import com.blog.entity.mysql.Tag;
 import com.blog.mapper.ArticleTagMapper;
 import com.blog.mapper.TagMapper;
@@ -30,7 +31,7 @@ public class TagServiceImpl implements TagService {
         LambdaQueryWrapper<Tag> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(Tag::getTagName, tag.getTagName());
         if (tagMapper.selectCount(wrapper) > 0) {
-            throw new BusinessException("标签名已存在");
+            throw new BusinessException("标签名称已存在");
         }
 
         tagMapper.insert(tag);
@@ -49,8 +50,11 @@ public class TagServiceImpl implements TagService {
     @Override
     public void deleteTag(Long tagId) {
         // 检查是否有文章使用该标签
-        List<Long> articleIds = articleTagMapper.selectArticleIdsByTagId(tagId);
-        if (!articleIds.isEmpty()) {
+        LambdaQueryWrapper<ArticleTag> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(ArticleTag::getTagId, tagId);
+        long count = articleTagMapper.selectCount(wrapper);
+
+        if (count > 0) {
             throw new BusinessException("该标签下有文章，无法删除");
         }
 
@@ -67,28 +71,19 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public List<TagVO> getTagList() {
+    public List<TagVO> getAllTags() {
         List<Tag> tags = tagMapper.selectList(null);
 
         return tags.stream().map(tag -> {
             TagVO tagVO = new TagVO();
             BeanUtils.copyProperties(tag, tagVO);
 
-            // 统计使用该标签的文章数
-            List<Long> articleIds = articleTagMapper.selectArticleIdsByTagId(tag.getId());
-            tagVO.setArticleCount((long) articleIds.size());
+            // 统计该标签下的文章数量
+            LambdaQueryWrapper<ArticleTag> wrapper = new LambdaQueryWrapper<>();
+            wrapper.eq(ArticleTag::getTagId, tag.getId());
+            long articleCount = articleTagMapper.selectCount(wrapper);
+            tagVO.setArticleCount(articleCount);
 
-            return tagVO;
-        }).collect(Collectors.toList());
-    }
-
-    @Override
-    public List<TagVO> getTagsByArticleId(Long articleId) {
-        List<Tag> tags = articleTagMapper.selectTagsByArticleId(articleId);
-
-        return tags.stream().map(tag -> {
-            TagVO tagVO = new TagVO();
-            BeanUtils.copyProperties(tag, tagVO);
             return tagVO;
         }).collect(Collectors.toList());
     }

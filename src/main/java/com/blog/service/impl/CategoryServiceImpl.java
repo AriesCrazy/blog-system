@@ -31,7 +31,7 @@ public class CategoryServiceImpl implements CategoryService {
         LambdaQueryWrapper<Category> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(Category::getCategoryName, category.getCategoryName());
         if (categoryMapper.selectCount(wrapper) > 0) {
-            throw new BusinessException("分类名已存在");
+            throw new BusinessException("分类名称已存在");
         }
 
         categoryMapper.insert(category);
@@ -53,6 +53,7 @@ public class CategoryServiceImpl implements CategoryService {
         LambdaQueryWrapper<Article> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(Article::getCategoryId, categoryId);
         long count = articleMapper.selectCount(wrapper);
+
         if (count > 0) {
             throw new BusinessException("该分类下有文章，无法删除");
         }
@@ -70,21 +71,19 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<CategoryVO> getCategoryList() {
+    public List<CategoryVO> getAllCategories() {
         LambdaQueryWrapper<Category> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(Category::getStatus, 1);
         wrapper.orderByAsc(Category::getSort);
-
         List<Category> categories = categoryMapper.selectList(wrapper);
 
         return categories.stream().map(category -> {
             CategoryVO categoryVO = new CategoryVO();
             BeanUtils.copyProperties(category, categoryVO);
 
-            // 统计该分类下的文章数
+            // 统计该分类下的文章数量
             LambdaQueryWrapper<Article> articleWrapper = new LambdaQueryWrapper<>();
             articleWrapper.eq(Article::getCategoryId, category.getId());
-            articleWrapper.eq(Article::getStatus, 1);
+            articleWrapper.eq(Article::getStatus, 1); // 只统计已发布的
             long articleCount = articleMapper.selectCount(articleWrapper);
             categoryVO.setArticleCount(articleCount);
 
